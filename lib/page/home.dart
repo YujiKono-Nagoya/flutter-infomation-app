@@ -117,13 +117,15 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-      body: SizedBox(
-        child: StreamBuilder<QuerySnapshot>(
-            stream: _infomationsStream,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                List<DocumentSnapshot> infomationsData = snapshot.data!.docs;
-                return Expanded(
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _infomationsStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List<DocumentSnapshot> infomationsData = snapshot.data!.docs;
+            return Flex(
+              direction: Axis.vertical,
+              children: [
+                Expanded(
                   child: ListView.builder(
                     controller: _listScrollController,
                     itemCount: infomationsData.length,
@@ -140,12 +142,14 @@ class _HomeState extends State<Home> {
                       );
                     },
                   ),
-                );
-              }
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }),
+                ),
+              ],
+            );
+          }
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incremenButton,
@@ -175,9 +179,11 @@ class InfomationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: ListTile(
-        tileColor: Colors.white,
-        title: Text('名前：$name' + '　品種：$type' + '　性別：$sex' + '　年齢：$age'),
+      child: Expanded(
+        child: ListTile(
+          tileColor: Colors.white,
+          title: Text('名前：$name' + '　品種：$type' + '　性別：$sex' + '　年齢：$age'),
+        ),
       ),
     );
   }

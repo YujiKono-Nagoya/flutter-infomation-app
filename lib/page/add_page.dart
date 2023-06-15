@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pet_app/services/firebase_service.dart';
+import 'package:intl/intl.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({super.key});
@@ -14,7 +15,6 @@ class AddPageState extends State<AddPage> {
   final _nameController = TextEditingController();
   final _typeController = TextEditingController();
   final _ageController = TextEditingController();
-  final _listScrollController = ScrollController();
   String? selectedAnimal;
   String? selectedSex;
 
@@ -73,6 +73,42 @@ class AddPageState extends State<AddPage> {
           );
         },
       );
+    } else if (selectedAnimal == null) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('エラー'),
+            content: Text('動物をを選択して下さい'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else if (selectedSex == null) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('エラー'),
+            content: Text('性別を選択して下さい'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     } else {
       try {
         await _firestoreService.addInfomation({
@@ -86,10 +122,13 @@ class AddPageState extends State<AddPage> {
         _nameController.clear();
         _typeController.clear();
         _ageController.clear();
-        _listScrollController
-            .jumpTo(_listScrollController.position.maxScrollExtent);
+        setState(() {
+          selectedAnimal = null;
+          selectedSex = null;
+        });
       } catch (e) {
         if (!mounted) return;
+        print('$e');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('メッセージを送信できませんでした'),
@@ -131,7 +170,7 @@ class AddPageState extends State<AddPage> {
                     ),
                   ),
                 ),
-                SizedBox(
+                Container(
                   width: MediaQuery.of(context).size.width * 0.75,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -152,7 +191,7 @@ class AddPageState extends State<AddPage> {
                             groupValue: selectedAnimal,
                             onChanged: (value) {
                               setState(() {
-                                selectedAnimal = value;
+                                selectedAnimal = value as String;
                               });
                             },
                           ),
@@ -173,7 +212,7 @@ class AddPageState extends State<AddPage> {
                             groupValue: selectedAnimal,
                             onChanged: (value) {
                               setState(() {
-                                selectedAnimal = value;
+                                selectedAnimal = value as String;
                               });
                             },
                           ),
@@ -195,7 +234,7 @@ class AddPageState extends State<AddPage> {
                     ),
                   ),
                 ),
-                SizedBox(
+                Container(
                   width: MediaQuery.of(context).size.width * 0.75,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -216,7 +255,7 @@ class AddPageState extends State<AddPage> {
                             groupValue: selectedSex,
                             onChanged: (value) {
                               setState(() {
-                                selectedSex = value;
+                                selectedSex = value as String;
                               });
                             },
                           ),
@@ -237,7 +276,7 @@ class AddPageState extends State<AddPage> {
                             groupValue: selectedSex,
                             onChanged: (value) {
                               setState(() {
-                                selectedSex = value;
+                                selectedSex = value as String;
                               });
                             },
                           ),
